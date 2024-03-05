@@ -1,0 +1,30 @@
+{
+  "name": "@funded-labs/plug-mobile-sdk",
+  "version": "0.1.0",
+  "main": "dist/src/index.js",
+  "module": "dist/esm/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "repository": "https://github.com/funded-labs/plug-mobile-sdk",
+  "author": "Funded Labs",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run clean && npm-run-all --parallel build:** && node ./scripts/add-package.js",
+    "build:cjs": "tsc --module commonjs --target es6 --outDir ./dist",
+    "build:esm": "tsc --module es2015 --target es6 --outDir ./dist/esm -d false",
+    "clean": "rimraf ./dist",
+    "publish:local": "npm run build && npm publish --access public --@funded-labs:registry=${LOCAL_REGISTRY:=http://localhost:4873/} --force",
+    "unpublish:local": "npm unpublish @funded-labs/plug-inpage-provider  --@funded-labs:registry=${LOCAL_REGISTRY:=http://localhost:4873/} --force"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^5.0.5",
+    "typescript": "4.2.4"
+  },
+  "dependencies": {
+    "@dfinity/agent": "^1.0.1",
+    "@dfinity/candid": "^1.0.1",
+    "@dfinity/identity": "^1.0.1",
+    "@dfinity/identity-secp256k1": "^1.0.1",
+    "@walletconnect/universal-provider": "^2.11.2"
+  }
+}
