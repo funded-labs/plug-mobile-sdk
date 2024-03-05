@@ -47,7 +47,7 @@ if (!mobileProvider.isPaired()) {
 
 When creating actor using SDK, identity delegation request will be performed.
 
-> :information_source: Not that for security reasons Plug will restrict identity delegations to token and NFT canisters. Those canisters will be filtered out from the target array, when delegating identity
+> :information_source: Note that for security reasons Plug will restrict identity delegations to token and NFT canisters. Those canisters will be filtered out from the target array, when delegating identity
 
 ```javascript
 const createAgent = async () => {
