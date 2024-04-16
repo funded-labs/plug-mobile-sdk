@@ -26,19 +26,18 @@ const ICP_WC_NAMESPACE = {
 
 class MobileProvider {
   private readonly walletConnectProjectId: string
-  private readonly window: any
+  private readonly window: Window
+  private readonly debug: boolean | undefined
   private readonly localIdentity: Secp256k1KeyIdentity
 
   private provider: UniversalProvider | null = null
   private isWallectConnectPaired = false
   private walletConnectSession: any = null
+  private delegatedIdentity: DelegationIdentity | undefined
+  private isFocused: boolean = true
 
   private wcPairUri: string | undefined
   private connectionPromise: (() => Promise<SessionTypes.Struct>) | undefined
-
-  private delegatedIdentity: DelegationIdentity | undefined
-
-  private readonly debug: boolean | undefined
 
   constructor(options: MobileProviderOptions) {
     this.walletConnectProjectId = options.walletConnectProjectId
@@ -81,6 +80,11 @@ class MobileProvider {
       this.wcPairUri = uri
       this.connectionPromise = approval
     }
+
+    this.window.addEventListener('visibilitychange', (event) => {
+      //@ts-ignore
+      this.isFocused = event.target.visibilityState == 'visible'
+    })
   }
 
   public static isMobileBrowser() {
@@ -103,6 +107,7 @@ class MobileProvider {
       return Promise.reject('No session approval listener')
 
     const url = `https://plugwallet.ooo/wc?uri=${this.wcPairUri}`
+    // @ts-ignore
     this.window.location = url
 
     const session = await this.connectionPromise()
@@ -143,7 +148,12 @@ class MobileProvider {
 
   private callViaWalletConnect(method: string, params: any) {
     this.debugLog('Calling via WC', { method, params })
-    this.window.location = 'https://plugwallet.ooo/wc'
+
+    if (this.isFocused) {
+      // @ts-ignore
+      this.window.location = 'https://plugwallet.ooo/wc'
+    }
+
     return this.provider?.client.request({
       chainId: WC_CHAIN_ID,
       topic: this.walletConnectSession.topic,
